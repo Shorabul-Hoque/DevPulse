@@ -1,0 +1,10 @@
+# Dependency directories
+node_modules/
+
+# Build and production outputs
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
