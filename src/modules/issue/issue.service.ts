@@ -4,7 +4,9 @@ const createIssueInDB = async (payload: any, reporterId: number) => {
     const { title, description, type } = payload;
 
     if (!title || title.length > 150) {
-        throw new Error("Title is required and must be maximum 150 characters");
+        const error: any = new Error("Title is required and must be maximum 150 characters");
+        error.statusCode = 400;
+        throw error;
     }
     if (!description || description.length < 20) {
         throw new Error("Description must be at least 20 characters long");
