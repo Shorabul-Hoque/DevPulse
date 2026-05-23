@@ -156,9 +156,24 @@ const updateIssueInDB = async (issueId: number, payload: any, user: { id: number
     return result.rows[0];
 };
 
+const deleteIssueFromDB = async (issueId: number) => {
+    const checkQuery = "SELECT id FROM issues WHERE id = $1";
+    const checkResult = await pool.query(checkQuery, [issueId]);
+
+    if (checkResult.rows.length === 0) {
+        const error: any = new Error("Issue not found");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    await pool.query("DELETE FROM issues WHERE id = $1", [issueId]);
+    return true;
+};
+
 export const issueService = {
     createIssueInDB,
     getAllIssuesFromDB,
     getSingleIssueFromDB,
-    updateIssueInDB
+    updateIssueInDB,
+    deleteIssueFromDB
 };
