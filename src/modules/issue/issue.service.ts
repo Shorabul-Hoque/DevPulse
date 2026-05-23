@@ -120,6 +120,7 @@ const updateIssueInDB = async (issueId: number, payload: any, user: { id: number
         if (issue.status !== "open") {
             const error: any = new Error("Cannot edit an issue that is already in progress or resolved");
             error.statusCode = 409;
+            throw error;
         }
 
         if (status && status !== issue.status) {
