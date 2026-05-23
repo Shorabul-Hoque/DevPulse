@@ -22,7 +22,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoute);
-app.use("/api/issue", issueRoute);
+app.use("/api/issues", issueRoute);
 app.use(globalErrorHandler);
 
 export default app;

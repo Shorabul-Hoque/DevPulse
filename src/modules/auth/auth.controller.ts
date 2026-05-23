@@ -13,7 +13,10 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
             message: "User registered successfully",
             data: result
         });
-    } catch (error) {
+    } catch (error: any) {
+        if (error.message === "User already exists with this email") {
+            error.statusCode = 400;
+        }
         next(error);
     }
 };
@@ -28,7 +31,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             message: "Login successful",
             data: result
         });
-    } catch (error) {
+    } catch (error: any) {
         next(error);
     }
 };
