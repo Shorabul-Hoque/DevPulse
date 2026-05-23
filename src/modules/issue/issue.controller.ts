@@ -1,0 +1,26 @@
+import { type Request, type Response, type NextFunction } from "express";
+import { issueService } from "./issue.service";
+import sendResponse from "../../utility/sendResponse";
+
+const createIssue = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const reporterId = (req as any).user.id;
+        const result = await issueService.createIssueInDB(req.body, reporterId);
+
+        sendResponse(res, {
+            statusCode: 201,
+            success: true,
+            message: "Issue created successfully",
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+export const issueController = {
+    createIssue,
+};
