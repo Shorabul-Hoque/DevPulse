@@ -96,8 +96,68 @@ const getSingleIssueFromDB = async (issueId: number) => {
     };
 };
 
+const updateIssueInDB = async (issueId: number, payload: any, user: { id: number; role: string }) => {
+    const { title, description, type, status } = payload;
+
+    const checkQuery = "SELECT * FROM issues WHERE id = $1";
+    const checkResult = await pool.query(checkQuery, [issueId]);
+    const issue = checkResult.rows[0];
+
+    if (!issue) {
+        const error: any = new Error("Issue not found");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    if (user.role === "contributor") {
+
+        if (issue.reporter_id !== user.id) {
+            const error: any = new Error("You do not have permission to update this issue");
+            error.statusCode = 403;
+            throw error;
+        }
+
+        if (issue.status !== "open") {
+            const error: any = new Error("Cannot edit an issue that is already in progress or resolved");
+            error.statusCode = 409;
+        }
+
+        if (status && status !== issue.status) {
+            const error: any = new Error("Contributors are not allowed to change workflow status");
+            error.statusCode = 403;
+            throw error;
+        }
+    }
+
+    const updatedTitle = title !== undefined ? title : issue.title;
+    const updatedDescription = description !== undefined ? description : issue.description;
+    const updatedType = type !== undefined ? type : issue.type;
+    const updatedStatus = status !== undefined ? status : issue.status;
+
+    if (updatedTitle.length > 150) throw new Error("Title must be maximum 150 characters");
+    if (updatedDescription.length < 20) throw new Error("Description must be at least 20 characters");
+
+    const updateQuery = `
+        UPDATE issues 
+        SET title = $1, description = $2, type = $3, status = $4, updated_at = NOW()
+        WHERE id = $5
+        RETURNING id, title, description, type, status, reporter_id, created_at, updated_at
+    `;
+
+    const result = await pool.query(updateQuery, [
+        updatedTitle,
+        updatedDescription,
+        updatedType,
+        updatedStatus,
+        issueId
+    ]);
+
+    return result.rows[0];
+};
+
 export const issueService = {
     createIssueInDB,
     getAllIssuesFromDB,
-    getSingleIssueFromDB
+    getSingleIssueFromDB,
+    updateIssueInDB
 };
