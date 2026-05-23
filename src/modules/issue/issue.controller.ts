@@ -34,7 +34,24 @@ const getAllIssues = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
+const getSingleIssue = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const issueId = Number(req.params.id);
+        const result = await issueService.getSingleIssueFromDB(issueId);
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Issue retrieved successfully",
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const issueController = {
     createIssue,
-    getAllIssues
+    getAllIssues,
+    getSingleIssue
 };
