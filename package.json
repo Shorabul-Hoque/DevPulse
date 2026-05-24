@@ -2,10 +2,12 @@
   "name": "devpulse",
   "version": "1.0.0",
   "description": "A secure, modular, and high-performance issue and bug tracking REST API built with Node.js, Express, and TypeScript using raw PostgreSQL queries.",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
+    "start": "node dist/server.js",
     "dev": "tsx watch ./src/server.ts",
-    "test": "echo \\\"Error: no tests specified\\\" && exit 1"
+    "build": "tsup",
+    "test": "echo \"Error: no tests specified\" && exit 1"
   },
   "keywords": [
     "node",
@@ -17,7 +19,10 @@
     "issue-tracker",
     "bug-tracker",
     "rest-api",
-    "devpulse"
+    "devpulse",
+    "cors",
+    "tsup",
+    "pg"
   ],
   "author": "Shorabul Hoque",
   "license": "ISC",
@@ -37,6 +42,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.21.0"
+    "pg": "^8.21.0",
+    "tsup": "^8.5.1"
   }
 }
